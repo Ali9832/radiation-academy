@@ -1,6 +1,8 @@
 import { fetchAPI } from '../../../../lib/fetchAPI';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+// / 👇 این خط را اضافه کن (خیلی مهم)
+export const runtime = 'edge';
 
 // --- 1. تعریف اینترفیس‌های جدید برای استاد ---
 interface Professor {

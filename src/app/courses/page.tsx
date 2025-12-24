@@ -1,7 +1,8 @@
 import { fetchAPI } from '../../../lib/fetchAPI';
 import CoursesClient from './CoursesClient';
 import styles from './courses.module.css';
-
+// / 👇 این خط را اضافه کن (خیلی مهم)
+export const runtime = 'edge';
 async function getPageData() {
     try {
         const data = await fetchAPI(`
