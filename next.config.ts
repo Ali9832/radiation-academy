@@ -1,11 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // این دو خط باعث می‌شود بیلد حتی با وجود ارور انجام شود
+    // نادیده گرفتن ارورها برای بیلد موفق
     eslint: {
         ignoreDuringBuilds: true,
     },
     typescript: {
         ignoreBuildErrors: true,
+    },
+
+    // 👇 این بخش جدید رو اضافه کن تا اون فایل ۲۵ مگابایتی ساخته نشه
+    webpack: (config) => {
+        config.cache = false;
+        return config;
     },
 
     images: {
