@@ -1,0 +1,293 @@
+/* app/courses/courses.module.css */
+
+.mainContainer {
+    /* متغیرها رو اینجا تعریف می‌کنیم */
+    --bg-dark: #1B263B;
+    --primary-blue: #00D4FF;
+    --secondary-purple: #9D84FF;
+    --text-white: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.7);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.15);
+
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    min-height: 100vh;
+    /* پترن پس‌زمینه */
+    background-image:
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+            radial-gradient(circle at 50% 0%, #2c3e5e 0%, #1B263B 100%);
+    background-size: 40px 40px, 40px 40px, 100% 100%;
+    background-attachment: fixed;
+    font-family: 'Vazirmatn', sans-serif;
+    direction: rtl;
+}
+
+/* --- Search Hero --- */
+.searchHero {
+    padding: 3rem 10% 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+}
+
+/* نور پس زمینه گرادینت */
+.searchHero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0,212,255,0.15) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 1;
+}
+
+.searchBox {
+    max-width: 600px;
+    margin: 20px auto 0;
+    position: relative;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 15px 20px;
+    padding-right: 50px; /* آیکون سمت راست */
+    border-radius: 50px;
+    border: 1px solid var(--primary-blue);
+    background: rgba(11, 16, 33, 0.6);
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    outline: none;
+    transition: 0.3s;
+    font-family: inherit;
+}
+
+.searchInput:focus {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+    background: rgba(11, 16, 33, 0.9);
+}
+
+.searchIcon {
+    position: absolute;
+    right: 20px; /* آیکون راست‌چین */
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-blue);
+    font-size: 1.2rem;
+}
+
+/* --- Layout --- */
+.container {
+    display: flex;
+    gap: 3rem;
+    padding: 3rem 5%;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.filters {
+    width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+.filterGroup {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.filterTitle {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-white);
+    display: flex;
+    justify-content: space-between;
+}
+
+.checkboxItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: 0.2s;
+}
+
+.checkboxItem:hover {
+    color: #fff;
+}
+
+.customCheckbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    font-size: 12px;
+    color: transparent;
+}
+
+/* Grid */
+.coursesGrid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    align-content: start;
+}
+
+/* Course Card */
+.courseCard {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: 0.4s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.courseCard:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary-blue);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.cardImg {
+    height: 160px;
+    background: #0f152a;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: rgba(255,255,255,0.1);
+    overflow: hidden;
+}
+
+.cardImg img {
+    transition: transform 0.5s ease;
+}
+
+.courseCard:hover .cardImg img {
+    transform: scale(1.1);
+}
+
+.cardBadge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.6);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    backdrop-filter: blur(4px);
+    z-index: 2;
+}
+
+.cardBody {
+    padding: 1.2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cardTitle {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+    color: #fff;
+}
+
+.instructorInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.instructorAvatar {
+    width: 24px;
+    height: 24px;
+    background: var(--secondary-purple);
+    border-radius: 50%;
+}
+
+.cardMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.price {
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.rating {
+    color: #FFD700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.btnView {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    margin-top: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: var(--text-white);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
+    display: block;
+}
+
+.btnView:hover {
+    background: var(--primary-blue);
+    color: #000;
+    border-color: var(--primary-blue);
+}
+
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        padding: 2rem 5%;
+    }
+    .filters {
+        width: 100%;
+        position: static;
+    }
+}

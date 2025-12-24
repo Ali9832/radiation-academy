@@ -1,42 +1,817 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* رنگ پس‌زمینه جدید: روشن‌تر و زنده‌تر */
+  --bg-dark: #1B263B;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+  /* رنگ‌های اصلی ثابت می‌مانند */
+  --primary-blue: #00D4FF;
+  --secondary-purple: #9D84FF; /* کمی روشن‌تر کردم */
+  --text-white: #ffffff;
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* شیشه‌ها را روشن‌تر می‌کنیم تا محتوا بهتر دیده شود */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
 }
 
 * {
-  box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Vazirmatn', sans-serif;
 }
 
-a {
-  color: inherit;
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  overflow-x: hidden;
+
+  /* گرادینت زمینه: بالا روشن‌تر، پایین کمی تیره‌تر (عمق میدان) */
+  background-image:
+    /* الگوی شطرنجی خیلی محو */
+          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+            /* نور محیطی */
+          radial-gradient(circle at 50% 0%, #2c3e5e 0%, #1B263B 100%);
+
+  background-size: 40px 40px, 40px 40px, 100% 100%;
+  background-attachment: fixed;
+}
+
+/* --- پس‌زمینه انیمیشنی --- */
+#canvas-container {
+  position: absolute; /* قبلا fixed بود */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* پشت محتوای هیرو */
+  pointer-events: none; /* موس از رویش رد شود و دکمه ها کار کنند */
+}
+
+/* --- هدر شیشه‌ای --- */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 1.5rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+  transition: all 0.3s ease;
+  background: rgba(27,38,59,1);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--text-white);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo span { color: var(--primary-blue); }
+
+nav ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+nav a {
+  color: rgba(255,255,255,0.8);
   text-decoration: none;
+  font-size: 0.95rem;
+  transition: 0.3s;
+  position: relative;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+nav a:hover {
+  color: var(--primary-blue);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.cta-btn-header {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid var(--primary-blue);
+  color: var(--primary-blue);
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cta-btn-header:hover {
+  background: var(--primary-blue);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+
+/* --- بخش Hero --- */
+.hero {
+  height: 100vh; /* ارتفاع تمام صفحه */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10%;
+  position: relative; /* مهم برای absolute بودن کانواس */
+  /* گرادینت جدید برای هیرو */
+  background: radial-gradient(circle at 70% 30%, #23304c 0%, #162035 100%);
+  overflow: hidden; /* ذرات از کادر بیرون نزنند */
+}
+
+.hero-content {
+  max-width: 600px;
+  z-index: 2;
+}
+/* محتوا باید روی کانواس باشد */
+.hero-content, .atom-container {
+  z-index: 2;
+  position: relative;
+}
+.hero-badge {
+  display: inline-block;
+  padding: 5px 15px;
+  background: rgba(123, 97, 255, 0.2);
+  border: 1px solid var(--secondary-purple);
+  border-radius: 50px;
+  color: var(--secondary-purple);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  font-size: 3.5rem;
+  line-height: 1.3;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+}
+
+h1 span {
+  background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--primary-blue), #00aaff);
+  color: #000;
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.3);
+  transition: 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-white);
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.3);
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-white);
+  background: rgba(255,255,255,0.05);
+}
+
+/* --- انیمیشن اتم (سمت چپ) --- */
+.atom-container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* مخفی کردن در موبایل */
+}
+
+.core {
+  width: 50px;
+  height: 50px;
+  background: var(--primary-blue);
+  border-radius: 50%;
+  box-shadow: 0 0 50px var(--primary-blue);
+  position: absolute;
+  z-index: 10;
+}
+
+.orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  transform-style: preserve-3d;
+}
+
+.orbit:nth-child(1) { animation: rotate1 4s linear infinite; }
+.orbit:nth-child(2) { animation: rotate2 5s linear infinite; width: 80%; height: 80%; }
+.orbit:nth-child(3) { animation: rotate3 6s linear infinite; width: 60%; height: 60%; }
+
+.electron {
+  width: 15px;
+  height: 15px;
+  background: var(--secondary-purple);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  box-shadow: 0 0 15px var(--secondary-purple);
+}
+
+@keyframes rotate1 {
+  0% { transform: rotateZ(0deg) rotateX(60deg); }
+  100% { transform: rotateZ(360deg) rotateX(60deg); }
+}
+@keyframes rotate2 {
+  0% { transform: rotateZ(0deg) rotateX(-60deg); }
+  100% { transform: rotateZ(360deg) rotateX(-60deg); }
+}
+@keyframes rotate3 {
+  0% { transform: rotateZ(0deg) rotateY(60deg); }
+  100% { transform: rotateZ(360deg) rotateY(60deg); }
+}
+
+/* ریسپانسیو */
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding-top: 100px;
   }
+  .atom-container {
+    display: none; /* در موبایل انیمیشن سنگین حذف شود یا کوچک شود */
+  }
+  nav ul { display: none; } /* منوی موبایل نیاز به پیاده سازی جدا دارد */
+  .hero-btns { justify-content: center; }
+  h1 { font-size: 2.5rem; }
+}
+
+/* اصلاح نوار اعتماد */
+.trust-section {
+  background: rgba(255, 255, 255, 0.03); /* کمی روشن تر */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2.5rem 0;
+  margin-bottom: 2rem;
+}
+
+.trust-grid {
+  display: flex;
+  justify-content: center; /* وسط چین کردن کامل */
+  gap: 3rem; /* فاصله بیشتر بین آیتم ها */
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6); /* رنگ پیش فرض روشن تر */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent; /* برای جلوگیری از پرش موقع هاور */
+}
+
+.trust-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* --- بخش دوره‌ها (Courses) --- */
+.courses-section {
+  padding: 5rem 10%;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  color: var(--primary-blue);
+  font-size: 1.1rem;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* کارت شیشه‌ای */
+.course-card {
+  /* background: rgba(255, 255, 255, 0.03); */
+  /* border: 1px solid rgba(255, 255, 255, 0.05); */
+  border-radius: 20px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  transition: 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  position: relative;
+  padding-top: 2.5rem; /* فاصله از بالا برای اینکه بج روی عکس نیفتد */
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); /* سایه نرم */
+}
+
+/* افکت هاور کارت: درخشش آبی */
+.course-card:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
+  transform: translateY(-10px);
+}
+
+.course-image {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(180deg, #1a2342 0%, #0f152a 100%);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.course-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px; /* بج را میبریم سمت چپ (انگلیسی) که در فارسی قشنگ تر دیده میشه */
+  right: auto; /* حذف راست چین */
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap; /* جلوگیری از شکستن متن */
+  z-index: 10;
+  background: rgba(11, 16, 33, 0.8); /* پس زمینه تیره تر برای خوانایی */
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.course-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.course-info {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.course-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.btn-card {
+  color: var(--primary-blue);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.3s;
+}
+
+.btn-card:hover {
+  color: var(--text-white);
+  gap: 10px; /* حرکت فلش */
+}
+
+
+.content-box {
+  padding: 20px 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.content-box h2 { color: var(--primary-blue); font-size: 1.2rem; margin-bottom: 10px; }
+.content-box p { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+
+
+/* --- محتوای باکس --- */
+.content-box {
+  padding: 20px 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  backdrop-filter: blur(5px);
+  transition: 0.3s;
+}
+
+.content-box:hover {
+  border-color: var(--primary-blue);
+  transform: scale(1.02);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+/* --- استایل نهایی و فیکس شده تایم‌لاین --- */
+.roadmap-section {
+  padding: 5rem 0;
+  position: relative;
+  background: var(--bg-dark);
+  overflow: hidden;
+}
+
+.timeline-wrapper {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  direction: ltr; /* ترفند طلایی: ساختار را چپ‌چین می‌کنیم تا مختصات دقیق شود */
+}
+
+/* خط وسط */
+.timeline-line {
+  position: absolute;
+  width: 4px;
+  background: linear-gradient(180deg, var(--primary-blue), var(--secondary-purple));
+  top: 0;
+  bottom: 0;
+  left: 50%; /* دقیقا وسط */
+  transform: translateX(-50%);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  z-index: 0;
+}
+
+.timeline-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem; /* فاصله عمودی آیتم‌ها */
+  position: relative;
+  opacity: 0; /* برای انیمیشن */
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+/* وقتی کلاس visible اضافه شود */
+.timeline-row.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* نیمه سمت چپ و راست */
+.timeline-half {
+  width: 50%;
+  padding: 0 40px; /* فاصله امن از خط وسط */
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* تنظیم جهت متن‌ها به فارسی */
+.timeline-content {
+  direction: rtl; /* متن‌ها دوباره راست‌چین شوند */
+  text-align: right;
+  background: linear-gradient(145deg, rgba(40, 55, 85, 0.9), rgba(30, 45, 70, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  position: relative;
+  backdrop-filter: blur(5px);
+  transition: 0.3s;
+}
+
+.timeline-content:hover {
+  border-color: var(--primary-blue);
+  transform: scale(1.02);
+  box-shadow: 0 5px 20px rgba(0, 212, 255, 0.1);
+}
+
+/* دایره وسط خط */
+.timeline-dot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--bg-dark);
+  border: 3px solid var(--primary-blue);
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 15px var(--primary-blue);
+  left: 50%;
+  transform: translateX(-50%);
+  /* دایره دقیقا وسط خط قرار میگیرد */
+}
+
+/* --- تنظیمات ریسپانسیو (موبایل) --- */
+@media (max-width: 768px) {
+  .timeline-line {
+    left: 30px; /* خط میره سمت چپ */
+  }
+
+  .timeline-row {
+    flex-direction: column; /* ستونی میشه */
+    align-items: flex-start;
+    margin-bottom: 2rem;
+  }
+
+  .timeline-half {
+    width: 100%;
+    padding-left: 60px; /* فاصله برای خط */
+    padding-right: 20px;
+  }
+
+  /* مخفی کردن نیمه خالی در موبایل */
+  .timeline-half:empty {
+    display: none;
+  }
+
+  .timeline-dot {
+    left: 30px; /* دایره هم میره روی خط سمت چپ */
+  }
+}
+
+/* --- استایل‌های اختصاصی صفحه دوره‌ها --- */
+
+/* بخش جستجو */
+.search-hero {
+  padding: 3rem 10% 2rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: radial-gradient(circle at 50% -50%, rgba(0,212,255,0.15) 0%, transparent 70%);
+  margin-bottom: 2rem;
+}
+
+.search-box {
+  max-width: 600px;
+  margin: 20px auto 0;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 20px;
+  padding-left: 50px; /* جا برای آیکون */
+  border-radius: 50px;
+  border: 1px solid #00D4FF;
+  background: rgba(11, 16, 33, 0.6);
+  color: #fff;
+  font-size: 1rem;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+  outline: none;
+  transition: 0.3s;
+  text-align: right;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+  background: rgba(11, 16, 33, 0.9);
+}
+
+.search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #00D4FF;
+}
+
+/* لی‌اوت صفحه دوره‌ها */
+.container-courses {
+  display: flex;
+  gap: 3rem;
+  padding: 0 5% 3rem;
+  min-height: 100vh;
+}
+
+/* سایدبار فیلترها */
+aside.filters {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.filter-group {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-title {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 0.5rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.7);
+  transition: 0.2s;
+  font-size: 0.9rem;
+}
+
+.checkbox-item:hover { color: #fff; }
+
+/* مخفی کردن چک باکس اصلی و ساخت یکی اختصاصی */
+input[type="checkbox"] { display: none; }
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: transparent; /* تیک مخفی */
+  transition: 0.2s;
+}
+
+input[type="checkbox"]:checked + .custom-checkbox {
+  background: #00D4FF;
+  border-color: #00D4FF;
+  color: #000; /* تیک دیده شود */
+}
+
+/* گرید دوره‌ها */
+.courses-grid-page {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  align-content: start;
+}
+
+/* ریسپانسیو */
+@media (max-width: 900px) {
+  .container-courses { flex-direction: column; }
+  aside.filters { width: 100%; position: static; }
+}
+/* --- استایل‌های صفحه تکی دوره --- */
+
+.course-header-single {
+  padding: 3rem 0;
+  background: linear-gradient(90deg, rgba(11,16,33,0.95) 0%, rgba(27,38,59,0.95) 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 3rem;
+}
+
+.breadcrumb { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+.course-title-large { font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.4; color: #fff; }
+
+.course-badges { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+.badge { padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+.badge.update { border-color: #00E676; color: #00E676; background: rgba(0, 230, 118, 0.1); }
+
+.course-meta-top { display: flex; gap: 2rem; color: rgba(255,255,255,0.7); font-size: 0.9rem; flex-wrap: wrap; }
+.star-rating { color: #FFD700; font-weight: bold; }
+
+/* لی‌اوت دو ستونه */
+.single-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* 70% content - 30% sidebar */
+  gap: 3rem;
+  padding: 0 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* تب‌ها */
+.tabs { display: flex; gap: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem; }
+.tab-btn {
+  padding: 15px 0; background: none; border: none; color: rgba(255,255,255,0.6);
+  font-size: 1.1rem; cursor: pointer; position: relative; transition: 0.3s;
+}
+.tab-btn.active { color: #00D4FF; font-weight: 700; }
+.tab-btn.active::after {
+  content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px;
+  background: #00D4FF; box-shadow: 0 0 10px #00D4FF;
+}
+
+/* باکس محتوا */
+.content-box {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+}
+.box-title { color: #fff; margin-bottom: 1rem; font-size: 1.2rem; }
+.text-muted { color: rgba(255,255,255,0.7); }
+
+.learn-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 1rem; }
+.learn-item { display: flex; gap: 10px; font-size: 0.95rem; color: rgba(255,255,255,0.8); }
+.check-icon { color: #00E676; }
+
+/* آکاردئون */
+.accordion-item { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+.accordion-header {
+  background: rgba(255,255,255,0.03); padding: 15px 20px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; color: #fff; transition: 0.2s;
+}
+.accordion-header:hover { background: rgba(255,255,255,0.06); }
+.accordion-content { padding: 0; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05); }
+
+.lesson-row {
+  padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex; justify-content: space-between; font-size: 0.9rem; color: rgba(255,255,255,0.6);
+}
+.lesson-row:hover { color: #fff; background: rgba(255,255,255,0.02); }
+
+/* سایدبار چسبان (Sticky) */
+.sidebar-col {
+  position: sticky; top: 120px; height: fit-content;
+}
+
+.purchase-card {
+  background: linear-gradient(145deg, rgba(30, 41, 65, 0.9), rgba(20, 28, 48, 0.9));
+  border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 20px;
+  overflow: hidden; box-shadow: 0 0 40px rgba(0,0,0,0.3);
+  backdrop-filter: blur(20px);
+}
+
+.preview-video {
+  width: 100%; height: 200px; background: #000;
+  display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer;
+}
+.play-btn-large {
+  width: 60px; height: 60px; background: rgba(0, 212, 255, 0.8); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #fff;
+  box-shadow: 0 0 20px #00D4FF; transition: 0.3s;
+}
+.preview-video:hover .play-btn-large { transform: scale(1.1); }
+
+/* انیمیشن ساده */
+.fade-in { animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ریسپانسیو */
+@media (max-width: 900px) {
+  .single-container { grid-template-columns: 1fr; }
+  .sidebar-col { position: static; order: -1; margin-bottom: 2rem; }
+  .learn-list { grid-template-columns: 1fr; }
 }

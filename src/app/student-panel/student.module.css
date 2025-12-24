@@ -1,0 +1,189 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    background: #0f172a;
+    color: #fff;
+    font-family: 'Vazirmatn', sans-serif;
+
+    /* 👇 این خط رو اضافه کن تا محتوا بیاد پایین‌تر از هدر */
+    padding-top: 100px;
+}
+
+/* سایدبار */
+.sidebar {
+    width: 280px;
+    background: #1e293b;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+
+    /* 👇 این خط رو اضافه کن تا سایدبار فیکس بشه و با صفحه اسکرول نشه (اختیاری ولی قشنگ‌تره) */
+    position: fixed;
+    top: 100px; /* هم‌اندازه padding-top کانتینر */
+    bottom: 0;
+    right: 0; /* چون RTL هستیم */
+    overflow-y: auto; /* اگر آیتم‌ها زیاد بود اسکرول بشه */
+}
+
+.userInfo {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    background: #333;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    border: 2px solid #00D4FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.userName {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.userRole {
+    font-size: 0.85rem;
+    color: #00D4FF;
+    background: rgba(0, 212, 255, 0.1);
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menuItem {
+    padding: 12px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menuItem:hover, .activeItem {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+}
+.activeItem {
+    border-right: 3px solid #00D4FF;
+}
+
+/* محتوای اصلی */
+.mainContent {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+
+    /* 👇 این خط رو اضافه کن */
+    margin-right: 280px; /* به اندازه عرض سایدبار */
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.pageTitle {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.statCard {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.statNumber {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #00D4FF;
+}
+
+.statLabel {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+}
+
+/* کارت دوره‌های من */
+.coursesList {
+    display: grid;
+    gap: 20px;
+}
+
+.courseItem {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.courseThumb {
+    width: 120px;
+    height: 80px;
+    background: #000;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.courseInfo {
+    flex: 1;
+}
+
+.progressBar {
+    width: 100%;
+    height: 6px;
+    background: #333;
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: #00E676;
+    border-radius: 3px;
+}
+
+.continueBtn {
+    padding: 10px 20px;
+    background: #00D4FF;
+    color: #000;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .container { flex-direction: column; }
+    .sidebar { width: 100%; border-left: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+}
